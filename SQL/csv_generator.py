@@ -8,6 +8,8 @@ NUM_ORDER_ITEM_CUSTOMIZATIONS = 500
 
 
 def ingredient():
+    '''Populates ingredient.csv with ingredient_id and ingredient_name
+    given the ingredient_types declared here. Returns csv content as dict().'''
     columns = ['ingredient_id', 'ingredient_name']
     ingredient_types = ['ketchup',
         'mustard',
@@ -43,6 +45,8 @@ def ingredient():
 
 
 def itemingredient(ingredients_dict):
+    '''Populates itemingredient.csv with item_id and ingredient_id
+        given the ingredients for each item.'''
     columns = ['item_id', 'ingredient_id']
     items = {
         640404923: "Ketchup, Mustard, Mayonnaise, Lettuce, Pickles, Onions, Tomatoes",
@@ -79,6 +83,9 @@ def itemingredient(ingredients_dict):
 
 
 def menu():
+    '''Currently assigns menu_id to each item_id with all the
+    same restaurant brand and store_id. (i.e. All items belong
+    to the same store.) Populates menu.csv.'''
     columns = ['menu_id', 'item_id', 'brand', 'store_id']
     item_ids = [
         640404923,
@@ -112,6 +119,10 @@ def menu():
 
 
 def customer():
+    '''Generates {NUM_CUSTOMERS} customers with random attributes except
+    everyone has opt_in = true because we have this information only for
+    opt_in folks as of now. Populates customer.csv.'''
+
     columns = ['customer_id', 'opt_in', 'birthday', 'gender']
     genders = [
         'male',
@@ -128,6 +139,8 @@ def customer():
 
 
 def order():
+    '''Generates {NUM_ORDERS} orders with order_id, a random customer_id,
+    a random timestamp between 2015 and 2020, and weather chosen from a list.'''
     columns = ['order_id', 'customer_id', 'order_timestamp', 'weather']
     weather = [
         'sunny',
@@ -147,6 +160,8 @@ def order():
 
 
 def orderitem():
+    '''Associates random item_id for each order_id.'''
+
     columns = ['order_id', 'item_id']
     item_ids = [
         640404923,
@@ -191,7 +206,12 @@ def orderitem():
 
     return orders
 
+
 def get_customer_diet_restr(cust_id: int):
+    '''Returns a dictionary of dietary id:preference of a given customer. If the
+    customer does not exist, or no preference found,
+    then empty dictionary is returned'''
+
     # loop thru custdiepref.csv and returns
     # the dietary pref id and actual pref txt
     preference_id_set = set() # list since cust could be halal and vegan
@@ -209,15 +229,16 @@ def get_customer_diet_restr(cust_id: int):
     # now you have the set of preference for a customer. make a dict of
     # preference_id and preference
     pref_id_name = dict()
-    with open("CSVs/dietarypreference.csv", "r") as FILE:
-        data = csv.reader(FILE)
-        pref_id_name = {id:pref_name for id,pref_name,weight in data
-                        if id in preference_id_set}
+    if len(preference_id_set) != 0:
+        with open("CSVs/dietarypreference.csv", "r") as FILE:
+            data = csv.reader(FILE)
+            pref_id_name = {id:pref_name for id,pref_name,weight in data
+                            if id in preference_id_set}
     return pref_id_name  # returns dict of pref_id's and their name of pref
 
 
 def get_customer_id_from_order(id: int):
-    # returns c_id by searching through order.csv
+    ''' returns c_id by searching through order.csv.  '''
     with open("CSVs/order.csv", "r") as FILE:
         data = csv.reader(FILE)
         # order id 7. expeects 171 back
@@ -230,6 +251,10 @@ def get_customer_id_from_order(id: int):
                 # this will just "ignore" the title since strings cant be ints
 
 def customization():
+    '''Menu items with customizable features (ingredients that
+    can be taken out) propagate customization.csv which each
+    menu item - customization pair. (E.g. burger_type1 with no ketchup
+    could be a row and burger_type1 with no mustard could be another.'''
     columns = ['customization_id', 'item_id', 'customization']
     customizations = [
         'no ketchup',
@@ -280,6 +305,8 @@ def customization():
 
 
 def orderitemcustomization(orders, customization_dict):
+    '''Pairs {NUM_ORDER_ITEM_CUSTOMIZATIONS} random orders with customizations
+    where the item_id matches.'''
     columns = ['order_id', 'item_id', 'customization_id']
     order_item_customizations = set()
 
@@ -301,6 +328,8 @@ def orderitemcustomization(orders, customization_dict):
 
 
 def dietarypreference():
+    '''For each preference, a weight of 1 - 5 is assigned as a pair (not random,
+    so total rows = len(preferences)*5.'''
     columns = ['preference_id', 'preference', 'preference_weight']
     preferences = [
         'dairy',
@@ -327,6 +356,8 @@ def dietarypreference():
 
 
 def customerdietarypreference(preference_weight_pairs):
+    '''Every few customers will have a preference attached to them.'''
+
     columns = ['customer_id', 'preference_id']
     customer_dietary_preference_pairs = set()
 
@@ -354,6 +385,6 @@ if __name__ == '__main__':
 
 
     ## TESTER!!
-    # get_customer_diet_restr(23)
+    get_customer_diet_restr(23)
     # get_customer_id_from_order(7)
 
