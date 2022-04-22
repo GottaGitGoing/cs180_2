@@ -213,7 +213,11 @@ def orderitem():
                 # randomly choose again.
                 rest_map = {"dairy":1,"nuts":2,"vegan":3,
                             "vegetarian":4,"kosher":5,"halal":6}
-                if restriction_list["kosher"]
+                for pref_id,pref in cust_diet_restriction.items():
+                    if restriction_list[pref] == 1:
+                        # something something
+
+
                 rest_comp_list = ['0', '0', '0', '0', '0', '0']
 
 
