@@ -199,12 +199,42 @@ def orderitem():
             # now we have customer_id associated with the orderitem. check the
             # customers restrictions and run random.choice until a valid item is
             # picked. (or create a separate list that
-            diet_restriction = get_customer_diet_restr(c_id)
-            item_id = random.choice(item_ids)
+            cust_diet_restriction = get_customer_diet_restr(c_id)
+            while True:
+                item_id = random.choice(item_ids)
+                restriction_list = get_item_restrictions(item_id)
+                    # now check restriction list returns and see if it contains
+                    # any of the customer diet restrictions
+                    # NOTE: the list returned will be format
+                    # item_id,dairy,nuts,vegan,vegetarian,kosher,halal
+
+                # GOAL: using restriction_list and cust_diet_restriction
+                # see if the random choice is appropriate. if not appropriate
+                # randomly choose again.
+                rest_map = {"dairy":1,"nuts":2,"vegan":3,
+                            "vegetarian":4,"kosher":5,"halal":6}
+                if restriction_list["kosher"]
+                rest_comp_list = ['0', '0', '0', '0', '0', '0']
+
+
             file.write(f'{id},{item_id}\n')
             orders[item_id].append(id)
 
     return orders
+
+
+def get_item_restrictions(item_id:int):
+    '''Given an item_id, it will return a list of restrictions applicable to
+    the specfic item_id.'''
+    with open("CSVs/itemrestrictions.csv", "r") as REST_FILE:
+        data = csv.reader(REST_FILE)
+        # calling next so the data iterator skips the header.
+        # Better than try except imo.
+        next(data)
+        for itm in data:
+            if int(itm[0]) == item_id:
+                return itm
+    return -1 # to indicate not item_id found
 
 
 def get_customer_diet_restr(cust_id: int):
@@ -385,6 +415,7 @@ if __name__ == '__main__':
 
 
     ## TESTER!!
-    get_customer_diet_restr(23)
+    print(get_customer_diet_restr(23))
     # get_customer_id_from_order(7)
+    print(get_item_restrictions(640404923))
 
