@@ -1,6 +1,6 @@
 from collections import defaultdict
 import random
-
+import csv
 
 NUM_CUSTOMERS = 200
 NUM_ORDERS = 2000
@@ -178,12 +178,45 @@ def orderitem():
         file.write(','.join(columns) + '\n')
 
         for id in range(1, NUM_ORDERS + 1):
+            # here check if item id fits the preference
+            # id is order_id
+            c_id = get_customer_id_from_order(id) # need c_id because we need to check the customers preference
+            # now we have customer_id associated with the orderitem. check the
+            # customers restrictions and run random.choice until a valid item is
+            # picked. (or create a separate list that
+            diet_restriction = get_customer_diet_rest(c_id)
             item_id = random.choice(item_ids)
             file.write(f'{id},{item_id}\n')
             orders[item_id].append(id)
 
     return orders
 
+def get_customer_diet_restr(cust_id: int):
+    # loop thru custdiepref.csv and return the dietary pref id
+    with open("CSVs/customerdietarypreference.csv", "r") as FILE:
+        data = csv.reader(FILE)
+
+        for i in data:
+            try:
+                if int(i[0]) == cust_id:
+                    print(i[1])
+                    return i[1] # return the preference id if cust_id match
+                                # NOTE MIGHT NEED to typecast return to int
+            except ValueError: # reasoning is checking str vs int might fail
+                pass
+def get_customer_id_from_order(id: int):
+    # returns c_id by searching through order.csv
+    with open("CSVs/order.csv", "r") as FILE:
+        data = csv.reader(FILE)
+        # order id 7. expeects 171 back
+        for i in data:
+            # print(type(i[0]))
+            try:
+                if int(i[0]) == id:
+                    return i[1]
+            except ValueError:
+                pass # this is because i havent skipped the csv header so
+                # this will just "ignore" the title since strings cant be ints
 
 def customization():
     columns = ['customization_id', 'item_id', 'customization']
@@ -296,13 +329,19 @@ def customerdietarypreference(preference_weight_pairs):
 
 
 if __name__ == '__main__':
-    ingredients_dict = ingredient()
-    itemingredient(ingredients_dict)
-    menu()
-    customer()
-    order()
-    orders = orderitem()
-    customization_dict = customization()
-    orderitemcustomization(orders, customization_dict)
-    preference_weight_pairs = dietarypreference()
-    customerdietarypreference(preference_weight_pairs)
+    # ingredients_dict = ingredient()
+    # itemingredient(ingredients_dict)
+    # menu()
+    # customer()
+    # order()
+    # preference_weight_pairs = dietarypreference()
+    # customerdietarypreference(preference_weight_pairs)
+    # orders = orderitem()
+    # customization_dict = customization()
+    # orderitemcustomization(orders, customization_dict)
+
+
+    ## TESTER!!
+    get_customer_diet_restr(23)
+    # get_customer_id_from_order(7)
+
