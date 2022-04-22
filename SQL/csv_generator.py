@@ -184,7 +184,7 @@ def orderitem():
             # now we have customer_id associated with the orderitem. check the
             # customers restrictions and run random.choice until a valid item is
             # picked. (or create a separate list that
-            diet_restriction = get_customer_diet_rest(c_id)
+            diet_restriction = get_customer_diet_restr(c_id)
             item_id = random.choice(item_ids)
             file.write(f'{id},{item_id}\n')
             orders[item_id].append(id)
@@ -192,25 +192,36 @@ def orderitem():
     return orders
 
 def get_customer_diet_restr(cust_id: int):
-    # loop thru custdiepref.csv and return the dietary pref id
+    # loop thru custdiepref.csv and returns
+    # the dietary pref id and actual pref txt
+    preference_id_set = set() # list since cust could be halal and vegan
     with open("CSVs/customerdietarypreference.csv", "r") as FILE:
         data = csv.reader(FILE)
-
         for i in data:
             try:
                 if int(i[0]) == cust_id:
                     print(i[1])
-                    return i[1] # return the preference id if cust_id match
-                                # NOTE MIGHT NEED to typecast return to int
+                    preference_id_set.add(i[1])
+                    # NOTE MIGHT NEED to typecast to int
             except ValueError: # reasoning is checking str vs int might fail
                 pass
+
+    # now you have the set of preference for a customer. make a dict of
+    # preference_id and preference
+    pref_id_name = dict()
+    with open("CSVs/dietarypreference.csv", "r") as FILE:
+        data = csv.reader(FILE)
+        pref_id_name = {id:pref_name for id,pref_name,weight in data
+                        if id in preference_id_set}
+    return pref_id_name  # returns dict of pref_id's and their name of pref
+
+
 def get_customer_id_from_order(id: int):
     # returns c_id by searching through order.csv
     with open("CSVs/order.csv", "r") as FILE:
         data = csv.reader(FILE)
         # order id 7. expeects 171 back
         for i in data:
-            # print(type(i[0]))
             try:
                 if int(i[0]) == id:
                     return i[1]
@@ -288,6 +299,7 @@ def orderitemcustomization(orders, customization_dict):
             file.write(f'{row[0]},{row[1]},{row[2]}\n')
 
 
+
 def dietarypreference():
     columns = ['preference_id', 'preference', 'preference_weight']
     preferences = [
@@ -342,6 +354,6 @@ if __name__ == '__main__':
 
 
     ## TESTER!!
-    get_customer_diet_restr(23)
+    # get_customer_diet_restr(23)
     # get_customer_id_from_order(7)
 
