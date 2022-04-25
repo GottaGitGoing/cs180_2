@@ -2,8 +2,8 @@ from dataclasses import dataclass
 import random
 import csv
 
-NUM_CUSTOMERS = 10
-NUM_ORDERS = 100
+NUM_CUSTOMERS = 100
+NUM_ORDERS = 1000
 
 # make customers
 def customer():
@@ -26,7 +26,8 @@ def customer():
 # return an item
 def order_item(preferences, weather, timestamp):
     '''Returns a random item that suits the inputs.'''
-    item_id = 0
+    
+    # read from csv to create item_id :[restrictions] dict
     # TODO: make function for modularity (?)
     with open('data/item_restrictions.csv', 'r') as file:
         data = csv.reader(file)
@@ -36,6 +37,7 @@ def order_item(preferences, weather, timestamp):
             if restriction == '': restrictions[item_id] = list()
             else: restrictions[item_id] = list(restriction.split(','))
 
+    # cross check and remove items that don't suit customer preference
     for preference in preferences:
         for item_id, restriction in restrictions.copy().items():
             if preference not in restriction: del restrictions[item_id]
@@ -52,7 +54,14 @@ def order_item(preferences, weather, timestamp):
         # beverages, sides, burger
         # random.choices(item_types, weights=[5,5,5,5...coffee])
         
-    return (item_id, '', '')
+    # grab item_name and taste_profile 
+    with open('data/item.csv', 'r') as file:
+        data = csv.reader(file)
+        next(data) # skip headers
+        for id, name, taste, type in data:
+            if id == item_id:
+                return(item_id, name, taste) 
+    return (-1,-1,-1)
 
 # make orders
 def orders():
