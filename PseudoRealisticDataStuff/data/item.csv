@@ -1,0 +1,23 @@
+item_id,name,taste_profile,type
+640404923,Hamburger,savory,burger
+640404963,Cheeseburger,savory,burger
+640405025,Bacon Cheeseburger,savory,burger
+640405058,Veggie Burger,savory,burger
+640405621,Veggie Cheeseburger,savory,burger
+640405085,Double Hamburger,savory,burger
+640405112,Double Cheeseburger,savory,burger
+640405172,Double Bacon Cheeseburger,savory,burger
+640405355,Small Drink,chilling,beverage
+640405371,Regular Drink,chilling,beverage
+640405380,Large Drink,chilling,beverage
+640405389,Small Shake,sweet,beverage
+640405395,Regular Shake,sweet,beverage
+640405399,Large Shake,sweet,beverage
+640405296,Small Fries,savory,side
+640405307,Regular Fries,savory,side
+640405315,Large Fries,savory,side
+640405323,Small Curly Fries,savory,side
+640405331,Regular Curly Fries,savory,side
+640405339,Large Curly Fries,savory,side
+640405347,Onion Rings,sweet,side
+640405348,Coffee,bitter,beverage
